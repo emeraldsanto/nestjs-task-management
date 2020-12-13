@@ -8,6 +8,8 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateTaskDTO } from './dto/task.create.dto';
 import { FilterTaskDTO } from './dto/task.filter.dto';
@@ -20,6 +22,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
+  @UsePipes(ValidationPipe)
   findAll(@Query() query?: FilterTaskDTO): ReadonlyArray<Task> {
     if (query) {
       return this.tasksService.findAllBy(query);
@@ -40,11 +43,13 @@ export class TasksController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   create(@Body() body: CreateTaskDTO): Task {
     return this.tasksService.create(body);
   }
 
   @Patch(':id')
+  @UsePipes(ValidationPipe)
   patch(@Param('id') id: Task['id'], @Body() body: PatchTaskDTO): Task {
     const patched = this.tasksService.patch(id, body);
 
